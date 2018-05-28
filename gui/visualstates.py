@@ -23,21 +23,21 @@ from PyQt5.QtGui import QPainter, QColor, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraphicsView, \
     QWidget, QFileDialog, QLabel, QVBoxLayout, QPushButton, QMessageBox
 
-from gui.automatascene import AutomataScene, OpType
-from gui.filemanager import FileManager
-from gui.treemodel import TreeModel
-from gui.state import State
-from gui.timerdialog import TimerDialog
-from gui.codedialog import CodeDialog
-from gui.librariesdialog import LibrariesDialog
-from gui.configdialog import ConfigDialog
-from gui.cppgenerator import CppGenerator
-from gui.pythongenerator import PythonGenerator
-from gui.interfaces import Interfaces
+from gui.automata.automatascene import AutomataScene, OpType
+from parsers.filemanager import FileManager
+from gui.tree.treemodel import TreeModel
+from core.state import State
+from gui.transition.timerdialog import TimerDialog
+from gui.state.codedialog import CodeDialog
+from gui.dialogs.librariesdialog import LibrariesDialog
+from gui.dialogs.configdialog import ConfigDialog
+from generators.cppgenerator import CppGenerator
+from generators.pythongenerator import PythonGenerator
+from interfaces.interfaces import Interfaces
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
-from gui.config import JdeRobotConfig, RosConfig, ROS, JDEROBOTCOMM
-from gui.cpprosgenerator import CppRosGenerator
-from gui.pythonrosgenerator import PythonRosGenerator
+from configs.config import JdeRobotConfig, RosConfig, ROS, JDEROBOTCOMM
+from generators.cpprosgenerator import CppRosGenerator
+from generators.pythonrosgenerator import PythonRosGenerator
 
 class VisualStates(QMainWindow):
     def __init__(self, parent=None):

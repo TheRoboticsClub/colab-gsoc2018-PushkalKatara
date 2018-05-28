@@ -19,16 +19,16 @@
   '''
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsItem, QAction, QMenu
 from PyQt5.QtCore import Qt, pyqtSignal
-from gui.guistate import StateGraphicsItem
-from gui.guitransition import TransitionGraphicsItem
-from gui.renamediaolog import RenameDialog
-from gui.codedialog import CodeDialog
-from gui.transitioncodedialog import TransitionCodeDialog
-from gui.transitiontype import TransitionType
-from gui.optype import OpType
-from gui.state import State
-from gui.transition import Transition
-from gui.idtextboxgraphicsitem import IdTextBoxGraphicsItem
+from gui.state.guistate import StateGraphicsItem
+from gui.transition.guitransition import TransitionGraphicsItem
+from gui.state.renamediaolog import RenameDialog
+from gui.state.codedialog import CodeDialog
+from gui.transition.transitioncodedialog import TransitionCodeDialog
+from gui.transition.transitiontype import TransitionType
+from gui.automata.optype import OpType
+from core.state import State
+from core.transition import Transition
+from gui.state.idtextboxgraphicsitem import IdTextBoxGraphicsItem
 
 
 class AutomataScene(QGraphicsScene):
@@ -119,8 +119,6 @@ class AutomataScene(QGraphicsScene):
         self.selectedState.setInitial(True)
         self.selectedState.stateData.setInitial(True)
 
-
-    #TODO: do i need to copy also transitions?
     def copyState(self):
         self.copiedState = self.selectedState.stateData.getNewCopy()
 
@@ -393,5 +391,3 @@ class AutomataScene(QGraphicsScene):
 
         for child in rootState.getChildren():
             self.setLastIndexes(child)
-
-

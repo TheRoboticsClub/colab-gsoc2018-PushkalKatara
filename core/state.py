@@ -17,8 +17,8 @@
    Authors : Okan Asik (asik.okan@gmail.com)
 
   '''
-from gui.guistate import StateGraphicsItem
-from gui.transition import Transition
+from gui.state.guistate import StateGraphicsItem
+from core.transition import Transition
 from xml.dom.minidom import Node
 
 class State:
