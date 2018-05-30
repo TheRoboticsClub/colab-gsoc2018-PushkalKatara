@@ -249,6 +249,7 @@ class AutomataScene(QGraphicsScene):
                 self.operationData.setPos(qGraphicsSceneMouseEvent.scenePos().x(),
                              qGraphicsSceneMouseEvent.scenePos().y())
                 self.importItems(self.operationData)
+                self.setLastIndexes(self.activeState)
             self.operationData = None
 
         else:

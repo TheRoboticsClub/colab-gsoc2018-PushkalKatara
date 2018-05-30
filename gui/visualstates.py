@@ -260,7 +260,6 @@ class VisualStates(QMainWindow):
             #Verify Here configs and functions and aux vars
             state = importManager.updateIDs(file[0], self.automataScene.getStateIndex())
             self.automataScene.setOperationType(OpType.IMPORTSTATE, state)
-            self.automataScene.setLastIndexes(self.rootState)
 
     def timerAction(self):
         if self.activeState is not None:
