@@ -196,6 +196,15 @@ class AutomataScene(QGraphicsScene):
 
         self.stateRemoved.emit(stateItem)
 
+    def importItems(self, stateItem):
+        transitions = []
+        for child in stateItem.getChildren():
+            self.addStateItem(child.getGraphicsItem())
+            transitions += child.getOriginTransitions()
+
+        for tran in transitions:
+            self.addTransitionItem(tran.getGraphicsItem(),False)
+
     def mouseReleaseEvent(self, qGraphicsSceneMouseEvent):
         # if we were editing the state text next mouse release should disable text editing
         # and should not add a new state or transition
@@ -239,14 +248,7 @@ class AutomataScene(QGraphicsScene):
             if len(selectedItems) == 0:
                 self.operationData.setPos(qGraphicsSceneMouseEvent.scenePos().x(),
                              qGraphicsSceneMouseEvent.scenePos().y())
-
-                transitions = []
-                for child in self.operationData.getChildren():
-                    self.addStateItem(child.getGraphicsItem())
-                    transitions += child.getOriginTransitions()
-
-                for tran in transitions:
-                    self.addTransitionItem(tran.getGraphicsItem(),False)
+                self.importItems(self.operationData)
             self.operationData = None
 
         else:
