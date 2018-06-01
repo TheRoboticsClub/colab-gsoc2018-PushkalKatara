@@ -30,7 +30,6 @@ from core.state import State
 from core.transition import Transition
 from gui.state.idtextboxgraphicsitem import IdTextBoxGraphicsItem
 
-
 class AutomataScene(QGraphicsScene):
     # signals
     stateInserted = pyqtSignal('QGraphicsItem')
@@ -44,6 +43,7 @@ class AutomataScene(QGraphicsScene):
         super(QGraphicsScene, self).__init__(parent)
 
         self.operationType = None
+        self.operationData = None
 
         # transition origin and destination
         self.origin = None
@@ -97,7 +97,6 @@ class AutomataScene(QGraphicsScene):
         self.removeTransitionAction = QAction('Remove', self)
         self.removeTransitionAction.triggered.connect(self.removeTransition)
 
-
     def renameState(self):
         dialog = RenameDialog('Rename', self.selectedState.stateData.name)
         dialog.move(self.contextPosition)
@@ -131,8 +130,7 @@ class AutomataScene(QGraphicsScene):
 
     def removeState(self):
         self.removeStateItem(self.selectedState)
-
-
+        
     def renameTransition(self):
         dialog = RenameDialog('Rename', self.selectedTransition.transitionData.name)
         dialog.move(self.contextPosition)
@@ -158,7 +156,6 @@ class AutomataScene(QGraphicsScene):
         self.addItem(tranItem)
         if isInsertion:
             self.transitionInserted.emit(tranItem)
-
 
     def addStateItem(self, stateItem, isInsertion=True):
         stateItem.stateNameChanged.connect(self.stateNameChanged)
@@ -199,6 +196,15 @@ class AutomataScene(QGraphicsScene):
 
         self.stateRemoved.emit(stateItem)
 
+    def importItems(self, stateItem):
+        transitions = []
+        for child in stateItem.getChildren():
+            self.addStateItem(child.getGraphicsItem())
+            transitions += child.getOriginTransitions()
+
+        for tran in transitions:
+            self.addTransitionItem(tran.getGraphicsItem(),False)
+            
     def mouseReleaseEvent(self, qGraphicsSceneMouseEvent):
         # if we were editing the state text next mouse release should disable text editing
         # and should not add a new state or transition
@@ -236,6 +242,16 @@ class AutomataScene(QGraphicsScene):
                     self.origin = None
             else:
                 self.origin = None
+
+        elif self.operationType == OpType.IMPORTSTATE and qGraphicsSceneMouseEvent.button() == Qt.LeftButton and self.operationData != None:
+            selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
+            if len(selectedItems) == 0:
+                self.operationData.setPos(qGraphicsSceneMouseEvent.scenePos().x(),
+                             qGraphicsSceneMouseEvent.scenePos().y())
+                self.importItems(self.operationData)
+                self.setLastIndexes(self.activeState)
+            self.operationData = None
+            
         else:
             if self.operationType == OpType.OPENAUTOMATA:
                 self.operationType = self.prevOperationType
@@ -268,8 +284,6 @@ class AutomataScene(QGraphicsScene):
         self.prevOperationType = self.operationType
         self.operationType = OpType.OPENAUTOMATA
 
-
-
     def showStateContextMenu(self, stateItem, qEvent):
         cMenu = QMenu()
         cMenu.addAction(self.renameStateAction)
@@ -296,9 +310,10 @@ class AutomataScene(QGraphicsScene):
         self.currentScenePos = qEvent.scenePos()
         action = cMenu.exec_(qEvent.screenPos())
 
-    def setOperationType(self, type):
+    def setOperationType(self, type, data=None):
         self.operationType = type
-
+        self.operationData = data
+        
     def getStateIndex(self):
         self.stateIndex += 1
         return self.stateIndex
@@ -334,7 +349,6 @@ class AutomataScene(QGraphicsScene):
 
         transition.setCode(code)
 
-
     def stateNameChanged(self, state):
         self.stateNameChangedSignal.emit(state)
 
@@ -351,6 +365,8 @@ class AutomataScene(QGraphicsScene):
         self.stateTextEditingStarted = True
 
     def setActiveState(self, state):
+        """Displays the Active State in AutomataScene
+        Helper Function to Display Child and State Functionality"""
         if state != self.activeState:
             self.clearScene()
             self.activeState = state
@@ -365,8 +381,9 @@ class AutomataScene(QGraphicsScene):
             # print('set active state:' + self.activeState.name)
             self.activeStateChanged.emit()
 
-
     def clearScene(self):
+        """Clears Graphics for AutomataScene
+        Helper Function for creating new AutomataScene"""
         # clear scene
         self.clear()
         if self.activeState != None:
@@ -378,10 +395,14 @@ class AutomataScene(QGraphicsScene):
                     tran.resetGraphicsItem()
 
     def resetIndexes(self):
+        """Reset Indices of Automata
+        Helper Funtion for creating new AutomataScene"""
+
         self.stateIndex = 0
         self.transitionIndex = 0
 
     def setLastIndexes(self, rootState):
+        """Updates AutomataScene's Largest State and Transition ID"""
         if rootState.id > self.stateIndex:
             self.stateIndex = rootState.id
 

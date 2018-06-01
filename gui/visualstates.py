@@ -25,6 +25,7 @@ from PyQt5.QtWidgets import QMainWindow, QAction, QDockWidget, QTreeView, QGraph
 
 from gui.automata.automatascene import AutomataScene, OpType
 from parsers.filemanager import FileManager
+from parsers.importmanager import ImportManager
 from gui.tree.treemodel import TreeModel
 from core.state import State
 from gui.transition.timerdialog import TimerDialog
@@ -104,6 +105,10 @@ class VisualStates(QMainWindow):
         transitionAction.setStatusTip('Create a transition')
         transitionAction.triggered.connect(self.transitionAction)
 
+        importAction = QAction('&Import', self)
+        importAction.setStatusTip('Import A State')
+        importAction.triggered.connect(self.importAction)
+
         # data menu
         timerAction = QAction('&Timer', self)
         timerAction.setShortcut('Ctrl+M')
@@ -164,6 +169,7 @@ class VisualStates(QMainWindow):
         figuresMenu = menubar.addMenu('&Figures')
         figuresMenu.addAction(stateAction)
         figuresMenu.addAction(transitionAction)
+        figuresMenu.addAction(importAction)
 
         dataMenu = menubar.addMenu('&Data')
         dataMenu.addAction(timerAction)
@@ -213,8 +219,6 @@ class VisualStates(QMainWindow):
         # else:
         #     print('open is canceled')
 
-
-
     def saveAction(self):
         if len(self.fileManager.getFileName()) == 0:
             self.saveAsAction()
@@ -233,7 +237,6 @@ class VisualStates(QMainWindow):
         # else:
         #     print('file dialog canceled')
 
-
     def quitAction(self):
         # print('Quit')
         self.close()
@@ -243,6 +246,20 @@ class VisualStates(QMainWindow):
 
     def transitionAction(self):
         self.automataScene.setOperationType(OpType.ADDTRANSITION)
+
+    def importAction(self):
+        fileDialog = QFileDialog(self)
+        fileDialog.setWindowTitle("Import VisualStates File")
+        fileDialog.setViewMode(QFileDialog.Detail)
+        fileDialog.setNameFilters(['VisualStates File (*.xml)'])
+        fileDialog.setDefaultSuffix('.xml')
+        fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
+        if fileDialog.exec_():
+            file = self.fileManager.open(fileDialog.selectedFiles()[0])
+            importManager = ImportManager()
+            #Verify Here configs and functions and aux vars
+            state = importManager.updateIDs(file[0], self.automataScene.getStateIndex())
+            self.automataScene.setOperationType(OpType.IMPORTSTATE, state)
 
     def timerAction(self):
         if self.activeState is not None:
@@ -269,7 +286,6 @@ class VisualStates(QMainWindow):
         self.configDialog = ConfigDialog('Config', self.config)
         self.configDialog.configChanged.connect(self.configChanged)
         self.configDialog.exec_()
-
 
     def showWarning(self, title, msg):
         QMessageBox.warning(self, title, msg)
@@ -394,7 +410,6 @@ class VisualStates(QMainWindow):
             if self.activeState.parent != None:
                 # print('parent name:' + self.activeState.parent.name)
                 self.automataScene.setActiveState(self.activeState.parent)
-
 
     def getStateById(self,state, id):
         if state.id == id:

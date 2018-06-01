@@ -15,7 +15,6 @@
    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
    Authors : Okan Asik (asik.okan@gmail.com)
- 
   '''
 from PyQt5.QtCore import Qt, QModelIndex, QAbstractItemModel
 from PyQt5.QtGui import QColor
