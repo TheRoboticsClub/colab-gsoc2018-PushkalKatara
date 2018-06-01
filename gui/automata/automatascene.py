@@ -130,7 +130,7 @@ class AutomataScene(QGraphicsScene):
 
     def removeState(self):
         self.removeStateItem(self.selectedState)
-
+        
     def renameTransition(self):
         dialog = RenameDialog('Rename', self.selectedTransition.transitionData.name)
         dialog.move(self.contextPosition)
@@ -204,7 +204,7 @@ class AutomataScene(QGraphicsScene):
 
         for tran in transitions:
             self.addTransitionItem(tran.getGraphicsItem(),False)
-
+            
     def mouseReleaseEvent(self, qGraphicsSceneMouseEvent):
         # if we were editing the state text next mouse release should disable text editing
         # and should not add a new state or transition
@@ -251,7 +251,7 @@ class AutomataScene(QGraphicsScene):
                 self.importItems(self.operationData)
                 self.setLastIndexes(self.activeState)
             self.operationData = None
-
+            
         else:
             if self.operationType == OpType.OPENAUTOMATA:
                 self.operationType = self.prevOperationType
@@ -313,7 +313,7 @@ class AutomataScene(QGraphicsScene):
     def setOperationType(self, type, data=None):
         self.operationType = type
         self.operationData = data
-
+        
     def getStateIndex(self):
         self.stateIndex += 1
         return self.stateIndex
@@ -397,6 +397,7 @@ class AutomataScene(QGraphicsScene):
     def resetIndexes(self):
         """Reset Indices of Automata
         Helper Funtion for creating new AutomataScene"""
+
         self.stateIndex = 0
         self.transitionIndex = 0
 

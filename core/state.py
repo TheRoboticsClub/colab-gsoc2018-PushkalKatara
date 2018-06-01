@@ -43,7 +43,7 @@ class State:
 
     def getID(self):
         return self.id
-        
+      
     def setPos(self, x, y):
         self.x = x
         self.y = y
@@ -110,7 +110,7 @@ class State:
             if len(elements[0].childNodes) > 0:
                 return elements[0].childNodes[0].nodeValue
         return ''
-
+      
     def parse(self, stateElement):
         # parse attributes of the state
         for (name, value) in stateElement.attributes.items():

@@ -22,3 +22,4 @@ class OpType():
     ADDTRANSITION = 1
     OPENAUTOMATA = 2
     IMPORTSTATE = 3
+
