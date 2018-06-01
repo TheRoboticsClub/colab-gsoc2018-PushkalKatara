@@ -62,6 +62,7 @@ class VisualStates(QMainWindow):
         self.show()
 
         self.fileManager = FileManager()
+        self.importManager = ImportManager()
 
         self.libraries = []
         self.config = None
@@ -256,9 +257,8 @@ class VisualStates(QMainWindow):
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
             file = self.fileManager.open(fileDialog.selectedFiles()[0])
-            importManager = ImportManager()
             #Verify Here configs and functions and aux vars
-            state = importManager.updateIDs(file[0], self.automataScene.getStateIndex())
+            state = self.importManager.updateIDs(file[0], self.automataScene.getStateIndex())
             self.automataScene.setOperationType(OpType.IMPORTSTATE, state)
 
     def timerAction(self):
