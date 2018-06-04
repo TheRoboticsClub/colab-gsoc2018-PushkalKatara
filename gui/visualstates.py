@@ -62,6 +62,7 @@ class VisualStates(QMainWindow):
         self.show()
 
         self.fileManager = FileManager()
+        self.importManager = ImportManager()
 
         self.libraries = []
         self.config = None
@@ -248,6 +249,13 @@ class VisualStates(QMainWindow):
         self.automataScene.setOperationType(OpType.ADDTRANSITION)
 
     def importAction(self):
+        """
+        Step 1 - Get Updated IDs
+        Step 2 - Add imported root state as children of the activeState
+        Step 3 - Set parent of imported root states as activeState
+        Step 4 - Load Complex States into tree model to display all in tree model.
+        Step 5 - Update Indexs.
+        """
         fileDialog = QFileDialog(self)
         fileDialog.setWindowTitle("Import VisualStates File")
         fileDialog.setViewMode(QFileDialog.Detail)
@@ -256,10 +264,12 @@ class VisualStates(QMainWindow):
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
             file = self.fileManager.open(fileDialog.selectedFiles()[0])
-            importManager = ImportManager()
             #Verify Here configs and functions and aux vars
-            state = importManager.updateIDs(file[0], self.automataScene.getStateIndex())
-            self.automataScene.setOperationType(OpType.IMPORTSTATE, state)
+            importedState = self.importManager.updateActiveState(file[0], self.automataScene.getStateIndex(), self.activeState)
+            self.treeModel.loadFromRoot(importedState, self.activeState)
+            self.automataScene.setActiveState(self.rootState)
+            self.automataScene.setLastIndexes(self.rootState)
+
 
     def timerAction(self):
         if self.activeState is not None:
@@ -382,7 +392,8 @@ class VisualStates(QMainWindow):
 
     def stateRemoved(self, state):
         if self.activeState != self.rootState:
-            self.treeModel.removeState(state.stateData, self.activeState)
+            parent = self.treeModel.getByDataId(self.activeState.id)
+            self.treeModel.removeState(state.stateData, parent)
         else:
             self.treeModel.removeState(state.stateData)
 
@@ -408,7 +419,7 @@ class VisualStates(QMainWindow):
     def upButtonClicked(self):
         if self.activeState != None:
             if self.activeState.parent != None:
-                # print('parent name:' + self.activeState.parent.name)
+                #print(self.activeState.parent.id)
                 self.automataScene.setActiveState(self.activeState.parent)
 
     def getStateById(self,state, id):
