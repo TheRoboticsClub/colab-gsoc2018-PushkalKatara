@@ -196,6 +196,7 @@ class AutomataScene(QGraphicsScene):
 
         self.stateRemoved.emit(stateItem)
 
+    """
     def importItems(self, stateItem):
         transitions = []
         for child in stateItem.getChildren():
@@ -204,6 +205,7 @@ class AutomataScene(QGraphicsScene):
 
         for tran in transitions:
             self.addTransitionItem(tran.getGraphicsItem(),False)
+    """
 
     def mouseReleaseEvent(self, qGraphicsSceneMouseEvent):
         # if we were editing the state text next mouse release should disable text editing
@@ -243,11 +245,10 @@ class AutomataScene(QGraphicsScene):
             else:
                 self.origin = None
 
+        # Feature to add? While clicking on the active state paste all the states
         elif self.operationType == OpType.IMPORTSTATE and qGraphicsSceneMouseEvent.button() == Qt.LeftButton and self.operationData != None:
             selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
             if len(selectedItems) == 0:
-                self.operationData.setPos(qGraphicsSceneMouseEvent.scenePos().x(),
-                             qGraphicsSceneMouseEvent.scenePos().y())
                 self.importItems(self.operationData)
                 self.setLastIndexes(self.activeState)
             self.operationData = None

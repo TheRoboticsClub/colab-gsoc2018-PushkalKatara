@@ -249,6 +249,13 @@ class VisualStates(QMainWindow):
         self.automataScene.setOperationType(OpType.ADDTRANSITION)
 
     def importAction(self):
+        """
+        Step 1 - Get Updated IDs
+        Step 2 - Add imported root state as children of the activeState
+        Step 3 - Set parent of imported root states as activeState
+        Step 4 - Load Complex States into tree model to display all in tree model.
+        Step 5 - Update Indexs.
+        """
         fileDialog = QFileDialog(self)
         fileDialog.setWindowTitle("Import VisualStates File")
         fileDialog.setViewMode(QFileDialog.Detail)
@@ -258,8 +265,14 @@ class VisualStates(QMainWindow):
         if fileDialog.exec_():
             file = self.fileManager.open(fileDialog.selectedFiles()[0])
             #Verify Here configs and functions and aux vars
-            state = self.importManager.updateIDs(file[0], self.automataScene.getStateIndex())
-            self.automataScene.setOperationType(OpType.IMPORTSTATE, state)
+            importedState = self.importManager.updateIDs(file[0], self.automataScene.getStateIndex())
+            for state in importedState.getChildren():
+                self.activeState.addChild(state)
+                state.setParent(self.activeState)
+            self.treeModel.loadFromRoot(importedState, self.activeState)
+            self.automataScene.setActiveState(self.rootState)
+            self.automataScene.setLastIndexes(self.rootState)
+
 
     def timerAction(self):
         if self.activeState is not None:
@@ -409,7 +422,7 @@ class VisualStates(QMainWindow):
     def upButtonClicked(self):
         if self.activeState != None:
             if self.activeState.parent != None:
-                # print('parent name:' + self.activeState.parent.name)
+                #print(self.activeState.parent.id)
                 self.automataScene.setActiveState(self.activeState.parent)
 
     def getStateById(self,state, id):
