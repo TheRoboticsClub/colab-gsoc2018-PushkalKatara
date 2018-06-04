@@ -265,10 +265,7 @@ class VisualStates(QMainWindow):
         if fileDialog.exec_():
             file = self.fileManager.open(fileDialog.selectedFiles()[0])
             #Verify Here configs and functions and aux vars
-            importedState = self.importManager.updateIDs(file[0], self.automataScene.getStateIndex())
-            for state in importedState.getChildren():
-                self.activeState.addChild(state)
-                state.setParent(self.activeState)
+            importedState = self.importManager.updateActiveState(file[0], self.automataScene.getStateIndex(), self.activeState)
             self.treeModel.loadFromRoot(importedState, self.activeState)
             self.automataScene.setActiveState(self.rootState)
             self.automataScene.setLastIndexes(self.rootState)

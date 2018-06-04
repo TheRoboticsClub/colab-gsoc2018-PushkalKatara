@@ -44,14 +44,22 @@ class ImportManager():
         self.functions = None
         self.variables = None
 
+    def updateActiveState(self, importState, stateID, activeState):
+        """Updates Parent State with States to be imported"""
+        self.importState = self.updateIDs(importState, stateID)
+        for state in self.importState.getChildren():
+            activeState.addChild(state)
+            state.setParent(activeState)
+        return self.importState
+
     def updateIDs(self, importState, stateID):
-        """ Wrapper upon UpdateState """
-        self.updateStates(importState, stateID)
+        """ Wrapper upon UpdateStateIDs """
+        self.updateStateIDs(importState, stateID)
         return importState
 
-    def updateStates(self, importState, stateID):
+    def updateStateIDs(self, importState, stateID):
         """ Assign New IDs to Imported State Data Recursively """
         for child in importState.getChildren():
             child.setID(stateID)
             stateID += 1
-            self.updateStates(child, stateID)
+            self.updateStateIDs(child, stateID)
