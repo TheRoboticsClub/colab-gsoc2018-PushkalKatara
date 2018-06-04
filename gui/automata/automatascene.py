@@ -314,11 +314,7 @@ class AutomataScene(QGraphicsScene):
     def setOperationType(self, type, data=None):
         self.operationType = type
         self.operationData = data
-<<<<<<< HEAD
 
-=======
-
->>>>>>> master
     def getStateIndex(self):
         self.stateIndex += 1
         return self.stateIndex
@@ -402,10 +398,6 @@ class AutomataScene(QGraphicsScene):
     def resetIndexes(self):
         """Reset Indices of Automata
         Helper Funtion for creating new AutomataScene"""
-<<<<<<< HEAD
-
-=======
->>>>>>> master
         self.stateIndex = 0
         self.transitionIndex = 0
 
