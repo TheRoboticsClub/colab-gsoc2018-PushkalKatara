@@ -19,6 +19,7 @@
   '''
 
 from PyQt5.QtWidgets import QFileDialog
+from configs.config import RosConfig
 
 class ImportManager():
     """
@@ -38,19 +39,29 @@ class ImportManager():
     Returns list of States which needs to be Imported
     """
     def __init__(self):
-        self.importState = None
-        self.config = None
-        self.libraries = None
-        self.functions = None
-        self.variables = None
+        self.JDEROBOTCOMM = 0
+        self.ROS = 1
+
+    def updateConfigs(self, newConfig, config):
+        if newConfig:
+            if config and newConfig.type == config.type:
+                if newConfig.type == self.ROS:
+                    config.updateROSConfig(newConfig)
+                elif newConfig.type == JDEROBOTCOMM:
+                    config.updateJDERobotCommConfig(newConfig)
+            else:
+                config = RosConfig()
+                config.updateROSConfig(newConfig)
+        print(config.topics)
+        return config
 
     def updateActiveState(self, importState, stateID, activeState):
         """Updates Parent State with States to be imported"""
-        self.importState = self.updateIDs(importState, stateID)
-        for state in self.importState.getChildren():
+        importState = self.updateIDs(importState, stateID)
+        for state in importState.getChildren():
             activeState.addChild(state)
             state.setParent(activeState)
-        return self.importState
+        return importState
 
     def updateIDs(self, importState, stateID):
         """ Wrapper upon UpdateStateIDs """
