@@ -82,6 +82,11 @@ class VisualStates(QMainWindow):
         openAction.setStatusTip('Open Visual States')
         openAction.triggered.connect(self.openAction)
 
+        importAction = QAction('&Import', self)
+        openAction.setShortcut('Ctrl+I')
+        importAction.setStatusTip('Import A State')
+        importAction.triggered.connect(self.importAction)
+
         saveAction = QAction('&Save', self)
         saveAction.setShortcut('Ctrl+S')
         saveAction.setStatusTip('Save Visual States')
@@ -105,10 +110,6 @@ class VisualStates(QMainWindow):
         transitionAction = QAction('&Transition', self)
         transitionAction.setStatusTip('Create a transition')
         transitionAction.triggered.connect(self.transitionAction)
-
-        importAction = QAction('&Import', self)
-        importAction.setStatusTip('Import A State')
-        importAction.triggered.connect(self.importAction)
 
         # data menu
         timerAction = QAction('&Timer', self)
@@ -163,6 +164,7 @@ class VisualStates(QMainWindow):
         archieveMenu = menubar.addMenu('&File')
         archieveMenu.addAction(newAction)
         archieveMenu.addAction(openAction)
+        archieveMenu.addAction(importAction)
         archieveMenu.addAction(saveAction)
         archieveMenu.addAction(saveAsAction)
         archieveMenu.addAction(quitAction)
@@ -170,7 +172,6 @@ class VisualStates(QMainWindow):
         figuresMenu = menubar.addMenu('&Figures')
         figuresMenu.addAction(stateAction)
         figuresMenu.addAction(transitionAction)
-        figuresMenu.addAction(importAction)
 
         dataMenu = menubar.addMenu('&Data')
         dataMenu.addAction(timerAction)
@@ -265,8 +266,12 @@ class VisualStates(QMainWindow):
         if fileDialog.exec_():
             file = self.fileManager.open(fileDialog.selectedFiles()[0])
             #Verify Here configs and functions and aux vars
+            #print(self.functions, self.variables)
+            self.config = self.importManager.updateConfigs(file[1], self.config)
+            #self.libraries = self.importManager.updateLibraries(file[2], self.libraries)
             importedState = self.importManager.updateActiveState(file[0], self.automataScene.getStateIndex(), self.activeState)
             self.treeModel.loadFromRoot(importedState, self.activeState)
+
             self.automataScene.setActiveState(self.rootState)
             self.automataScene.setLastIndexes(self.rootState)
 
