@@ -18,7 +18,7 @@
 
   '''
 import sys
-from interfaces.interfaces import Interfaces
+from configs.interfaces import Interfaces
 from PyQt5.QtWidgets import QDialog, QGroupBox, \
     QLineEdit, QVBoxLayout, QHBoxLayout, QPushButton, \
     QWidget, QApplication, QLabel, QGridLayout, QComboBox

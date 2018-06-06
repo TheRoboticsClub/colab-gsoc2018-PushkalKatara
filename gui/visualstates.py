@@ -34,7 +34,7 @@ from gui.dialogs.librariesdialog import LibrariesDialog
 from gui.dialogs.configdialog import ConfigDialog
 from generators.cppgenerator import CppGenerator
 from generators.pythongenerator import PythonGenerator
-from interfaces.interfaces import Interfaces
+from configs.interfaces import Interfaces
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
 from configs.config import JdeRobotConfig, RosConfig, ROS, JDEROBOTCOMM
 from generators.cpprosgenerator import CppRosGenerator

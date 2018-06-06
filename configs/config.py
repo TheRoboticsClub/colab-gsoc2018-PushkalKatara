@@ -195,7 +195,6 @@ class JdeRobotConfig(Config):
         # Add interface
         pass
 
-
     def getInterfaces(self):
         return self.interfaces
 

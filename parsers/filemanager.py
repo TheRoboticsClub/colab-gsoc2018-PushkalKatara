@@ -135,9 +135,3 @@ class FileManager():
         if self.fullPath.rfind(os.sep) >= 0:
             path = self.fullPath[0:self.fullPath.rfind(os.sep)]
         return path
-
-
-
-
-
-
