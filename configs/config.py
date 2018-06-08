@@ -192,8 +192,9 @@ class JdeRobotConfig(Config):
         self.interfaces = []
 
     def updateJDERobotCommConfig(self, config):
-        # Add interface
-        pass
+        for interface in config.interfaces:
+            if interface not in self.interfaces:
+                self.interfaces.append(interface)
 
     def getInterfaces(self):
         return self.interfaces

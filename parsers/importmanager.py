@@ -47,12 +47,16 @@ class ImportManager():
             if config and newConfig.type == config.type:
                 if newConfig.type == self.ROS:
                     config.updateROSConfig(newConfig)
-                elif newConfig.type == JDEROBOTCOMM:
+                elif newConfig.type == self.JDEROBOTCOMM:
                     config.updateJDERobotCommConfig(newConfig)
             else:
-                config = RosConfig()
-                config.updateROSConfig(newConfig)
-        print(config.topics)
+                if newConfig.type == self.ROS:
+                    config = RosConfig()
+                    config.updateROSConfig(newConfig)
+                elif newConfig.type == self.JDEROBOTCOMM:
+                    config = JdeRobotConfig()
+                    config.updateJDERobotCommConfig(newConfig)
+
         return config
 
     def updateActiveState(self, importState, stateID, activeState):
