@@ -49,7 +49,7 @@ class ImportManager():
         libraries = self.updateLibraries(file[2], klass.libraries)
         functions = self.updateFunctions(file[3], klass.functions)
         variables = self.updateVariables(file[4], klass.variables)
-        return importedState, config, libraries,
+        return importedState, config, libraries, functions, variables
 
     def updateFunctions(self, newFunctions, functions):
         """Updates existing functions with imported functions"""
