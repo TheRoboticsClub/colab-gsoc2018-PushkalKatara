@@ -53,11 +53,17 @@ class ImportManager():
 
     def updateFunctions(self, newFunctions, functions):
         """Updates existing functions with imported functions"""
-        return functions+newFunctions
+        if functions == newFunctions:
+            return functions
+        else:
+            return functions+newFunctions
 
     def updateVariables(self, newVariables, variables):
         """Updates existing variables with imported variables"""
-        return variables+newVariables
+        if variables == newVariables:
+            return variables
+        else:
+            return variables+newVariables
 
     def updateLibraries(self, newLibraries, libraries):
         """Updates existing libraries with imported libraries"""
