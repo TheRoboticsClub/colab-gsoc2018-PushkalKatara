@@ -42,7 +42,32 @@ class ImportManager():
         self.JDEROBOTCOMM = 0
         self.ROS = 1
 
+    def updateAuxiliaryData(self, file, klass):
+        """Wrapper upon all update functions"""
+        importedState = self.updateActiveState(file[0], klass.automataScene.getStateIndex(), klass.activeState)
+        config = self.updateConfigs(file[1], klass.config)
+        libraries = self.updateLibraries(file[2], klass.libraries)
+        functions = self.updateFunctions(file[3], klass.functions)
+        variables = self.updateVariables(file[4], klass.variables)
+        return importedState, config, libraries,
+
+    def updateFunctions(self, newFunctions, functions):
+        """Updates existing functions with imported functions"""
+        return functions+newFunctions
+
+    def updateVariables(self, newVariables, variables):
+        """Updates existing variables with imported variables"""
+        return variables+newVariables
+
+    def updateLibraries(self, newLibraries, libraries):
+        """Updates existing libraries with imported libraries"""
+        for lib in newLibraries:
+            if lib not in libraries:
+                libraries.append(lib)
+        return libraries
+
     def updateConfigs(self, newConfig, config):
+        """Updates Existing Configurations with imported Configurations"""
         if newConfig:
             if config and newConfig.type == config.type:
                 if newConfig.type == self.ROS:
@@ -56,7 +81,6 @@ class ImportManager():
                 elif newConfig.type == self.JDEROBOTCOMM:
                     config = JdeRobotConfig()
                     config.updateJDERobotCommConfig(newConfig)
-
         return config
 
     def updateActiveState(self, importState, stateID, activeState):
