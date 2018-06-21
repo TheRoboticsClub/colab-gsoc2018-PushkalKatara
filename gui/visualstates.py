@@ -34,7 +34,7 @@ from gui.dialogs.librariesdialog import LibrariesDialog
 from gui.dialogs.configdialog import ConfigDialog
 from generators.cppgenerator import CppGenerator
 from generators.pythongenerator import PythonGenerator
-from interfaces.interfaces import Interfaces
+from configs.interfaces import Interfaces
 from gui.cmakevars import CMAKE_INSTALL_PREFIX
 from configs.config import JdeRobotConfig, RosConfig, ROS, JDEROBOTCOMM
 from generators.cpprosgenerator import CppRosGenerator
@@ -265,16 +265,11 @@ class VisualStates(QMainWindow):
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
             file = self.fileManager.open(fileDialog.selectedFiles()[0])
-            #Verify Here configs and functions and aux vars
-            #print(self.functions, self.variables)
-            self.config = self.importManager.updateConfigs(file[1], self.config)
-            #self.libraries = self.importManager.updateLibraries(file[2], self.libraries)
-            importedState = self.importManager.updateActiveState(file[0], self.automataScene.getStateIndex(), self.activeState)
+            importedState, self.config, self.libraries, self.functions, self.variables = self.importManager.updateAuxiliaryData(file, self)
             self.treeModel.loadFromRoot(importedState, self.activeState)
 
             self.automataScene.setActiveState(self.rootState)
             self.automataScene.setLastIndexes(self.rootState)
-
 
     def timerAction(self):
         if self.activeState is not None:
@@ -450,7 +445,7 @@ class VisualStates(QMainWindow):
             self.activeState.setTimeStep(duration)
 
     def variablesChanged(self, variables):
-            self.variables = variables
+        self.variables = variables
 
     def functionsChanged(self, functions):
         self.functions = functions
