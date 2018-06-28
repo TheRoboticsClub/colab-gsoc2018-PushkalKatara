@@ -132,6 +132,7 @@ class TopicsTab(QWidget):
             rosTypes = Interfaces.getRosMessageTypes(rosDir)
         else:
             rosTypes = Interfaces.getRosMessageTypes()
+            
         if rosTypes:
             for type in rosTypes:
                 concatType = type['typeDir'] + '/' + type['type']
