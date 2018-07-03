@@ -63,13 +63,12 @@ class VisualStates(QMainWindow):
 
         self.fileManager = FileManager()
         self.importManager = ImportManager()
-        
+
         self.automataPath = None
 
         self.libraries = []
         self.config = None
-        self.functions = ''
-        self.variables = ''
+        self.namespaces = []
         self.interfaceHeaderMap = Interfaces.getInterfaces()
 
     def createMenu(self):
@@ -202,8 +201,7 @@ class VisualStates(QMainWindow):
 
         self.libraries = []
         self.config = None
-        self.functions = ''
-        self.variables = ''
+        self.namespaces = []
 
     def openAction(self):
         fileDialog = QFileDialog(self)
@@ -213,7 +211,7 @@ class VisualStates(QMainWindow):
         fileDialog.setDefaultSuffix('.xml')
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if fileDialog.exec_():
-            (self.rootState, self.config, self.libraries, self.functions, self.variables) = self.fileManager.open(fileDialog.selectedFiles()[0])
+            (self.rootState, self.config, self.libraries, self.namespaces) = self.fileManager.open(fileDialog.selectedFiles()[0])
             self.automataPath = self.fileManager.fullPath
             self.treeModel.removeAll()
             self.treeModel.loadFromRoot(self.rootState)
@@ -228,7 +226,7 @@ class VisualStates(QMainWindow):
         if len(self.fileManager.getFileName()) == 0:
             self.saveAsAction()
         else:
-            self.fileManager.save(self.rootState, self.config, self.libraries, self.functions, self.variables)
+            self.fileManager.save(self.rootState, self.config, self.libraries, self.namespaces)
 
     def saveAsAction(self):
         fileDialog = QFileDialog(self)
@@ -238,7 +236,7 @@ class VisualStates(QMainWindow):
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
         if fileDialog.exec_():
             self.fileManager.setFullPath(fileDialog.selectedFiles()[0])
-            self.fileManager.save(self.rootState, self.config, self.libraries, self.functions, self.variables)
+            self.fileManager.save(self.rootState, self.config, self.libraries, self.namespaces)
         # else:
         #     print('file dialog canceled')
 
@@ -262,7 +260,8 @@ class VisualStates(QMainWindow):
         if fileDialog.exec_():
             file = self.fileManager.open(fileDialog.selectedFiles()[0])
             self.fileManager.setPath(self.automataPath)
-            importedState, self.config, self.libraries, self.functions, self.variables = self.importManager.updateAuxiliaryData(file, self)
+            # Update importing Namespaces
+            importedState, self.config, self.libraries, self.namespaces = self.importManager.updateAuxiliaryData(file, self)
             self.treeModel.loadFromRoot(importedState, self.activeState)
             self.automataScene.displayState(self.activeState)
             self.automataScene.setLastIndexes(self.rootState)

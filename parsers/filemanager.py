@@ -35,7 +35,7 @@ class FileManager():
             path += '.xml'
         self.fullPath = path
 
-    def save(self, rootState, config, libraries, functions, variables):
+    def save(self, rootState, config, libraries, namespaces):
         doc = minidom.Document()
         root = doc.createElement('VisualStates')
         doc.appendChild(root)
@@ -44,15 +44,11 @@ class FileManager():
         if config is not None:
             root.appendChild(config.createNode(doc))
 
-        # save functions
-        functionsElement = doc.createElement('functions')
-        functionsElement.appendChild(doc.createTextNode(functions))
-        root.appendChild(functionsElement)
-
-        # save variables
-        variablesElement = doc.createElement('variables')
-        variablesElement.appendChild(doc.createTextNode(variables))
-        root.appendChild(variablesElement)
+        # save namespaces
+        namespaceElement = doc.createElement('namespaces')
+        for namespace in namespaces:
+            namespaceElement.appendChild(namespace.createNode(doc))
+        root.appendChild(namespaces.createNode(doc))
 
         # save libraries
         libraryElement = doc.createElement('libraries')
@@ -91,6 +87,17 @@ class FileManager():
                 config.loadNode(configElement)
                 config.type = JDEROBOTCOMM
 
+        namespaces = []
+
+        # parse namespaces
+        namespaceElements = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('namespaces')
+        if len(namespaceElements) > 0:
+            namespaceElements = namespaceElements[0].getElementsByTagName('namespace')
+            for namespaceElement in namespaceElements:
+                namespace = Namespace()
+                namespace.parse(namespaceElement)
+                namespaces.append(namespace)
+
         libraries = []
 
         # parse libraries
@@ -114,7 +121,7 @@ class FileManager():
             if len(variablesElement.childNodes) > 0:
                 variables = variablesElement.childNodes[0].nodeValue
 
-        return rootState, config, libraries, functions, variables
+        return rootState, config, libraries, namespaces
 
     def hasFile(self):
         return len(self.fullPath) > 0
