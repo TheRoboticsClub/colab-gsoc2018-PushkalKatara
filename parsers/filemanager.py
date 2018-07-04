@@ -19,6 +19,7 @@
   '''
 from xml.dom import minidom
 from core.state import State
+from core.namespace import Namespace
 from configs.config import ROS, JDEROBOTCOMM, RosConfig, JdeRobotConfig
 import os
 
@@ -45,10 +46,11 @@ class FileManager():
             root.appendChild(config.createNode(doc))
 
         # save namespaces
-        namespaceElement = doc.createElement('namespaces')
+        namespacesElement = doc.createElement('namespaces')
         for namespace in namespaces:
-            namespaceElement.appendChild(namespace.createNode(doc))
-        root.appendChild(namespaces.createNode(doc))
+            namespaceElement = namespace.createNode(doc)
+            namespacesElement.appendChild(namespaceElement)
+        root.appendChild(namespacesElement)
 
         # save libraries
         libraryElement = doc.createElement('libraries')
@@ -88,38 +90,22 @@ class FileManager():
                 config.type = JDEROBOTCOMM
 
         namespaces = []
-
         # parse namespaces
         namespaceElements = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('namespaces')
         if len(namespaceElements) > 0:
             namespaceElements = namespaceElements[0].getElementsByTagName('namespace')
             for namespaceElement in namespaceElements:
-                namespace = Namespace()
+                namespace = Namespace(0, "root", None, None)
                 namespace.parse(namespaceElement)
                 namespaces.append(namespace)
 
         libraries = []
-
         # parse libraries
         libraryElements = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('libraries')
         if len(libraryElements) > 0:
             libraryElements = libraryElements[0].getElementsByTagName('library')
             for libElement in libraryElements:
                 libraries.append(libElement.childNodes[0].nodeValue)
-
-        # get functions
-        functions = ''
-        if len(doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('functions')) > 0:
-            functionsElement = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('functions')[0]
-            if len(functionsElement.childNodes) > 0:
-                functions = functionsElement.childNodes[0].nodeValue
-
-        # get variables
-        variables = ''
-        if len(doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('variables')) > 0:
-            variablesElement = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('variables')[0]
-            if len(variablesElement.childNodes) > 0:
-                variables = variablesElement.childNodes[0].nodeValue
 
         return rootState, config, libraries, namespaces
 

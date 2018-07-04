@@ -18,17 +18,18 @@
 
   '''
 class Namespace:
-    def __init__(self):
-        self.id = None
-        self.name = None
-        self.functions = None
-        self.variables = None
+    def __init__(self, id, name, functions, variables):
+        self.id = id
+        self.name = name
+        self.functions = functions
+        self.variables = variables
 
     def createNode(self, doc):
         namespaceElement = doc.createElement('namespace')
         namespaceElement.setAttribute('id', str(self.id))
         nameElement = doc.createElement('name')
         nameElement.appendChild(doc.createTextNode(self.name))
+        namespaceElement.appendChild(nameElement)
         functionsElement = doc.createElement('functions')
         functionsElement.appendChild(doc.createTextNode(self.functions))
         namespaceElement.appendChild(functionsElement)
@@ -39,7 +40,18 @@ class Namespace:
 
     def parse(self, element):
         self.id = element.getAttribute('id')
-        self.name = element.getElementsByTagName('name')
-        self.functions = element.getElementsByTagName('functions')
-        self.variables = element.getElementsByTagName('variables')
-        return self
+        self.name = element.getElementsByTagName('name')[0].childNodes[0].nodeValue
+        self.functions = element.getElementsByTagName('functions')[0].childNodes[0].nodeValue
+        self.variables = element.getElementsByTagName('variables')[0].childNodes[0].nodeValue
+
+    def getVariables(self):
+        return self.variables
+
+    def setVariables(self, variables):
+        self.variables = variables
+
+    def getFunctions(self):
+        return self.functions
+
+    def setFuntions(self, functions):
+        self.functions = functions
