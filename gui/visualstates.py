@@ -49,7 +49,7 @@ class VisualStates(QMainWindow):
         self.configDialog = None
 
         # root state
-        self.rootState = State(0, "root", True)
+        self.rootState = State(0, "root", True, 0)
         self.activeState = self.rootState
         self.activeNamespace = Namespace(0, "root", None, None)
 
@@ -198,8 +198,8 @@ class VisualStates(QMainWindow):
         self.treeModel.removeAll()
 
         # create new root state
-        self.rootState = State(0, 'root', True)
         self.activeNamespace = Namespace(0, "root", None, None)
+        self.rootState = State(0, 'root', True, 0)
 
         self.automataScene.setActiveState(self.rootState)
         self.automataScene.resetIndexes()
@@ -207,6 +207,7 @@ class VisualStates(QMainWindow):
         self.libraries = []
         self.config = None
         self.namespaces = []
+        self.namespaces.append(self.activeNamespace)
 
     def openAction(self):
         fileDialog = QFileDialog(self)
@@ -219,9 +220,9 @@ class VisualStates(QMainWindow):
             (self.rootState, self.config, self.libraries, self.namespaces) = self.fileManager.open(fileDialog.selectedFiles()[0])
             # Find root namespace and set it.
             for namespace in self.namespaces:
-                if(namespace.id == unicode(0) and namespace.name == "root"):
+                if(int(namespace.id) == 0 and namespace.name == "root"):
                     self.activeNamespace = namespace
-                    
+
             self.automataPath = self.fileManager.fullPath
             self.treeModel.removeAll()
             self.treeModel.loadFromRoot(self.rootState)

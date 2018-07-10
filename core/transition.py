@@ -22,7 +22,7 @@ from gui.transition.guitransition import TransitionGraphicsItem
 from PyQt5.QtCore import QPointF
 
 class Transition:
-    def __init__(self, id, name, origin=None, dest=None):
+    def __init__(self, id, name, namespaceid, origin=None, dest=None):
         self.id = id
         self.name = name
         self.transitionType = TransitionType.TEMPORAL
@@ -32,6 +32,7 @@ class Transition:
         self.x = 0
         self.y = 0
         self.isPosChanged = False
+        self.namespaceid = namespaceid
 
         self.origin = None
         self.destination = None

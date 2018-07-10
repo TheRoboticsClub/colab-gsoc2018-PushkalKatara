@@ -22,7 +22,7 @@ from core.transition import Transition
 from xml.dom.minidom import Node
 
 class State:
-    def __init__(self, id, name, initial, parent=None):
+    def __init__(self, id, name, initial, namespaceid, parent=None):
         self.parent = parent
         self.id = id
         self.name = name
@@ -34,12 +34,19 @@ class State:
         self.children = []
         self.originTransitions = []
         self.destTransitions = []
+        self.namespaceid = namespaceid
 
         self.graphicsItem = None
         self.isRunning = False
 
     def setID(self, id):
         self.id = id
+
+    def setNamespaceID(self, id):
+        self.namespaceid = id
+
+    def getNamespaceID(self):
+        return self.namespaceid
 
     def getID(self):
         return self.id
@@ -137,7 +144,7 @@ class State:
         for childNode in stateElement.childNodes:
             if childNode.nodeType == Node.ELEMENT_NODE:
                 if childNode.tagName == 'state':
-                    childState = State(0, 'state', False, self)
+                    childState = State(0, 'state', False, 0, self)
                     transitionNodes = childState.parse(childNode)
                     # print('add child:' + childState.name + ' to parent:' + self.name)
                     self.addChild(childState)
@@ -148,7 +155,7 @@ class State:
 
         # wire transitions with the states after all the child states are parsed
         for tranNode in allChildTransitions:
-            transition = Transition(0, 'transition')
+            transition = Transition(0, 'transition', 0)
             transition.parse(tranNode, statesById)
 
         # return transitions of the state to be able to wire after all states are created

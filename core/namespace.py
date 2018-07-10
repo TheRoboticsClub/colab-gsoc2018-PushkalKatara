@@ -44,6 +44,9 @@ class Namespace:
         self.functions = element.getElementsByTagName('functions')[0].childNodes[0].nodeValue
         self.variables = element.getElementsByTagName('variables')[0].childNodes[0].nodeValue
 
+    def setID(self, id):
+        self.id = id
+
     def getVariables(self):
         return self.variables
 

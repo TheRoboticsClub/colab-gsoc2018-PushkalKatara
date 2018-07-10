@@ -73,7 +73,7 @@ class FileManager():
         self.setFullPath(fullPath)
         doc = minidom.parse(fullPath)
         rootNode = doc.getElementsByTagName('VisualStates')[0].getElementsByTagName('state')[0]
-        rootState = State(0, 'root', True)
+        rootState = State(0, 'root', True, 0)
         rootState.parse(rootNode)
 
         # parse configs
