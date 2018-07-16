@@ -47,6 +47,9 @@ class Namespace:
     def setID(self, id):
         self.id = id
 
+    def getID(self):
+        return self.id
+
     def getVariables(self):
         return self.variables
 

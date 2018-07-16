@@ -215,16 +215,18 @@ class AutomataScene(QGraphicsScene):
             QGraphicsScene.mouseReleaseEvent(self, qGraphicsSceneMouseEvent)
             return
 
-        if self.operationType == OpType.ADDSTATE and qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
+        if self.operationType == OpType.ADDSTATE and qGraphicsSceneMouseEvent.button() == Qt.LeftButton and self.operationData != None:
             selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
             if len(selectedItems) == 0:
                 sIndex = self.getStateIndex()
-                state = State(sIndex, 'state ' + str(sIndex), False, self.activeState)
+                state = State(sIndex, 'state ' + str(sIndex), False, self.operationData, self.activeState)
+                print(state.getNamespaceID())
                 state.setPos(qGraphicsSceneMouseEvent.scenePos().x(),
                              qGraphicsSceneMouseEvent.scenePos().y())
                 self.addStateItem(state.getGraphicsItem())
 
             self.origin = None
+
         elif self.operationType == OpType.ADDTRANSITION and qGraphicsSceneMouseEvent.button() == Qt.LeftButton:
             selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
             if len(selectedItems) > 0:
@@ -234,10 +236,12 @@ class AutomataScene(QGraphicsScene):
                     if self.origin != None:
                         self.destination = item
                         tIndex = self.getTransitionIndex()
-                        tran = Transition(tIndex, 'transition ' + str(tIndex),
+                        tran = Transition(tIndex, 'transition ' + str(tIndex), self.operationData,
                                           self.origin.stateData, self.destination.stateData)
+                        print(tran.getNamespaceID())
                         self.addTransitionItem(tran.getGraphicsItem())
                         self.origin = None
+                        self.operationData = None
                     else:
                         self.origin = item
                 else:
@@ -246,6 +250,7 @@ class AutomataScene(QGraphicsScene):
                 self.origin = None
 
         # Feature to add? While clicking on the active state paste all the states
+
         elif self.operationType == OpType.IMPORTSTATE and qGraphicsSceneMouseEvent.button() == Qt.LeftButton and self.operationData != None:
             selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
             if len(selectedItems) == 0:

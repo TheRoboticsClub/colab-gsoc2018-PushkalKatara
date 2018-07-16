@@ -257,10 +257,10 @@ class VisualStates(QMainWindow):
         self.close()
 
     def stateAction(self):
-        self.automataScene.setOperationType(OpType.ADDSTATE)
+        self.automataScene.setOperationType(OpType.ADDSTATE, self.activeNamespace.getID())
 
     def transitionAction(self):
-        self.automataScene.setOperationType(OpType.ADDTRANSITION)
+        self.automataScene.setOperationType(OpType.ADDTRANSITION, self.activeNamespace.getID())
 
     def importAction(self):
         fileDialog = QFileDialog(self)
