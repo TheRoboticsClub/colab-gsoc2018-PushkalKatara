@@ -51,7 +51,7 @@ class VisualStates(QMainWindow):
         # root state
         self.rootState = State(0, "root", True, 0)
         self.activeState = self.rootState
-        self.activeNamespace = Namespace(0, "root", None, None)
+        self.activeNamespace = Namespace(0, "root", '', '')
 
         # create status bar
         self.statusBar()
@@ -198,7 +198,7 @@ class VisualStates(QMainWindow):
         self.treeModel.removeAll()
 
         # create new root state
-        self.activeNamespace = Namespace(0, "root", None, None)
+        self.activeNamespace = Namespace(0, "root", '', '')
         self.rootState = State(0, 'root', True, 0)
 
         self.automataScene.setActiveState(self.rootState)

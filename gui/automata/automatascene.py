@@ -220,7 +220,7 @@ class AutomataScene(QGraphicsScene):
             if len(selectedItems) == 0:
                 sIndex = self.getStateIndex()
                 state = State(sIndex, 'state ' + str(sIndex), False, self.operationData, self.activeState)
-                print(state.getNamespaceID())
+                print('Namespace ID: ', state.getNamespaceID())
                 state.setPos(qGraphicsSceneMouseEvent.scenePos().x(),
                              qGraphicsSceneMouseEvent.scenePos().y())
                 self.addStateItem(state.getGraphicsItem())
@@ -238,7 +238,7 @@ class AutomataScene(QGraphicsScene):
                         tIndex = self.getTransitionIndex()
                         tran = Transition(tIndex, 'transition ' + str(tIndex), self.operationData,
                                           self.origin.stateData, self.destination.stateData)
-                        print(tran.getNamespaceID())
+                        print('Namespace ID: ' , tran.getNamespaceID())
                         self.addTransitionItem(tran.getGraphicsItem())
                         self.origin = None
                         self.operationData = None
