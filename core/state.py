@@ -22,7 +22,7 @@ from core.transition import Transition
 from xml.dom.minidom import Node
 
 class State:
-    def __init__(self, id, name, initial, namespaceid, parent=None):
+    def __init__(self, id, name, initial, namespace, parent=None):
         self.parent = parent
         self.id = id
         self.name = name
@@ -34,7 +34,8 @@ class State:
         self.children = []
         self.originTransitions = []
         self.destTransitions = []
-        self.namespaceid = namespaceid
+
+        self.namespace = namespace
 
         self.graphicsItem = None
         self.isRunning = False
@@ -42,11 +43,11 @@ class State:
     def setID(self, id):
         self.id = id
 
-    def setNamespaceID(self, id):
-        self.namespaceid = id
+    def setNamespace(self, namespace):
+        self.namespace = namespace
 
-    def getNamespaceID(self):
-        return self.namespaceid
+    def getNamespace(self):
+        return self.namespace
 
     def getID(self):
         return self.id
@@ -140,6 +141,7 @@ class State:
         # recursive child state parsing
         allChildTransitions = []
         statesById = {}
+        namespaceNodes = []
         stateTransitions = []
         for childNode in stateElement.childNodes:
             if childNode.nodeType == Node.ELEMENT_NODE:
@@ -152,14 +154,22 @@ class State:
                     allChildTransitions = allChildTransitions + transitionNodes
                 elif childNode.tagName == 'transition':
                     stateTransitions.append(childNode)
+                elif childNode.tagName == 'namespace':
+                    self.namespaceid = childNode.stateElement.getAttribute('id')
+
+                    namespaceNodes.append(childNode)
 
         # wire transitions with the states after all the child states are parsed
         for tranNode in allChildTransitions:
             transition = Transition(0, 'transition', 0)
             transition.parse(tranNode, statesById)
 
+        for namespaceNode in namespaceNodes:
+            namespace = Namespace(0, 'localnamespace', '', '')
+            namespace.parse(childNode)
+
         # return transitions of the state to be able to wire after all states are created
-        return stateTransitions
+        return stateTransitions, namespaceNodes
 
     def createElement(self, doc, parentElement=None):
         stateElement = doc.createElement('state')
@@ -191,6 +201,9 @@ class State:
 
         if parentElement is not None:
             parentElement.appendChild(stateElement)
+
+        if self.initial and self.children:
+            stateElement.appendChild(self.namespace.createNode(doc))
 
         return stateElement
 

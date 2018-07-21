@@ -57,6 +57,7 @@ class AutomataScene(QGraphicsScene):
 
         # the active state whose children will be drawn on the graphicsview
         self.activeState = None
+        self.activeNamespace = None
 
         self.createActions()
 
@@ -219,8 +220,7 @@ class AutomataScene(QGraphicsScene):
             selectedItems = self.items(qGraphicsSceneMouseEvent.scenePos())
             if len(selectedItems) == 0:
                 sIndex = self.getStateIndex()
-                state = State(sIndex, 'state ' + str(sIndex), False, self.operationData, self.activeState)
-                print('Namespace ID: ', state.getNamespaceID())
+                state = State(sIndex, 'state' + str(sIndex), False, self.operationData, self.activeState)
                 state.setPos(qGraphicsSceneMouseEvent.scenePos().x(),
                              qGraphicsSceneMouseEvent.scenePos().y())
                 self.addStateItem(state.getGraphicsItem())
@@ -238,7 +238,6 @@ class AutomataScene(QGraphicsScene):
                         tIndex = self.getTransitionIndex()
                         tran = Transition(tIndex, 'transition ' + str(tIndex), self.operationData,
                                           self.origin.stateData, self.destination.stateData)
-                        print('Namespace ID: ' , tran.getNamespaceID())
                         self.addTransitionItem(tran.getGraphicsItem())
                         self.origin = None
                         self.operationData = None
@@ -285,6 +284,7 @@ class AutomataScene(QGraphicsScene):
                 item = self.getParentItem(selectedItems[0])
                 if isinstance(item, StateGraphicsItem):
                     self.setActiveState(item.stateData)
+                    self.setActiveNamespace(item.stateData.getNamespace())
                 QGraphicsScene.mouseDoubleClickEvent(self, qGraphicsSceneMouseEvent)
 
         self.prevOperationType = self.operationType
@@ -375,6 +375,11 @@ class AutomataScene(QGraphicsScene):
             self.clearScene()
             self.activeState = state
             self.displayState(self.activeState)
+
+    def setActiveNamespace(self, namespace):
+        if namespace != self.activeNamespace:
+            self.activeNamespace = namespace
+            # Write Funtion to display Functions and variables
 
     def displayState(self, state):
         transitions = []
