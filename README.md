@@ -21,4 +21,4 @@ make
 sudo make install
 ```
 
-
+### Google Summer Of Code Repository for VisualStates. The following repository is being shifted to https://github.com/pushkalkatara/VisualStates
